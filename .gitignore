@@ -1,4 +1,7 @@
 build
 *.env
 *.run
+\#.+\#
+*~
+*.swp
 
