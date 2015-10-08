@@ -1,5 +1,5 @@
-module edu.nyu.cs.cc.Bool {
-
+module edu.nyu.cs.cc.Bool
+{
   //Syntax
   sort B
   | ⟦T⟧@4 | ⟦F⟧@4
@@ -18,7 +18,6 @@ module edu.nyu.cs.cc.Bool {
   | scheme Or(B, B);
   Or(⟦F⟧, #2) → #2;
   Or(⟦T⟧, #2) → ⟦T⟧;
-  //MISSING: rules for Or
 
   | scheme Not(B);
   Not(⟦F⟧) → ⟦T⟧;
@@ -30,7 +29,6 @@ module edu.nyu.cs.cc.Bool {
   Evaluate(⟦T⟧) → ⟦T⟧;
   Evaluate(⟦F⟧) → ⟦F⟧;
   Evaluate(⟦⟨B#1⟩|⟨B#2⟩⟧) → Or(Evaluate(#1), Evaluate(#2));
-  //MISSING: evaluation of disjunction
   Evaluate(⟦⟨B#1⟩&⟨B#2⟩⟧) → And(Evaluate(#1), Evaluate(#2));
   Evaluate(⟦!⟨B#⟩⟧) → Not(Evaluate(#));
 
