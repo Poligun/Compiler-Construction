@@ -1,11 +1,13 @@
 module yuhan.project1.Pr1Yuhan
 {
-  //space [ \t\f\r\n] | nested "/*" "*/" | "//".*;
+    space [ \t\f\r\n] | "/*"([^*]|\*[^/]|\n|\r\n)*"*/"  | "//".*;
 
     token BooleanType | boolean;
     token NumberType  | number;
     token StringType  | string;
     token VoidType    | void;
+
+    token Separator | ";";
 
     token Var       | var;
     token If        | if;
@@ -17,19 +19,29 @@ module yuhan.project1.Pr1Yuhan
 
     token Identifier | [a-zA-Z$_][a-zA-Z0-9$_]*;
     token Integer    | [0-9]+;
-    token String     | \' .* \';
 
-    //    token fragment Escape | \\[];
+    token fragment StringEscape
+    | \\([\'\"\\nt]|(\r?\n)|(x[a-fA-F0-9][a-fA-F0-9])); 
+    
+    token String
+    | \"([^\\\"]|⟨StringEscape⟩)*\"
+    | \'([^\\\']|⟨StringEscape⟩)*\'
+    ;
+    
+    sort Escaped
+    | ⟦\\⟧
+    ;
 
-    //token SingleLineComment | \/\/.*$;
-    //token MultiLineComment  | /\*[.\n\r]*\*/;
+    sort EscapedSeq
+    | ⟦⟨EscapedSeq⟩⟨Escaped⟩⟧ | ⟦⟧
+    ;
 
     main sort Program
     | ⟦⟨StatementSeq⟩⟧
     ;
     
     sort E
-    | ⟦⟨Identifier⟩⟧ @19 | ⟦⟨Integer⟩⟧ @19 | ⟦⟨String⟩⟧ @19 | ⟦(⟨E⟩)⟧ @19
+    | ⟦⟨Identifier⟩⟧ @19 | ⟦⟨Integer⟩⟧ @19 | ⟦⟨String⟩⟧ @19 | ⟦⟨Object⟩⟧ @19  | ⟦(⟨E⟩)⟧ @19
     | ⟦⟨E @18⟩(⟨ExpSeq⟩)⟧ @18 | ⟦⟨E @18⟩.⟨E @19⟩⟧ @18
     | ⟦!⟨E @15⟩⟧ @15 | ⟦~⟨E @15⟩⟧ @15 | ⟦-⟨E @15⟩⟧ @15 | ⟦+⟨E @15⟩⟧ @15
     | ⟦⟨E @14⟩*⟨E @15⟩⟧ @14 | ⟦⟨E @14⟩/⟨E @15⟩⟧ @14 | ⟦⟨E @14⟩%⟨E @15⟩⟧ @14
@@ -42,7 +54,7 @@ module yuhan.project1.Pr1Yuhan
     | ⟦⟨E @6⟩&&⟨E @7⟩⟧ @6
     | ⟦⟨E @5⟩||⟨E @6⟩⟧ @5
     | ⟦⟨E @5⟩?⟨E⟩:⟨E @4⟩⟧ @4 //Here ternary operator is right associative
-    | ⟦⟨E @4⟩=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩+=⟨E @3⟩⟧ @3 // Missing
+    | ⟦⟨E @4⟩=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩+=⟨E @3⟩⟧ @3
     | ⟦⟨E @1⟩,⟨E @2⟩⟧ @1 //Comma Sequence has the lowest precedence
     ;
 
@@ -50,24 +62,49 @@ module yuhan.project1.Pr1Yuhan
     | ⟦⟨ExpSeq @2⟩,⟨E⟩⟧ @2 | ⟦⟨E⟩⟧ @3 | ⟦⟧ @1
     ;
 
+    sort Object
+    | ⟦{⟨NVPairSeq⟩}⟧
+    ;
+
+    sort NameValuePair
+    | ⟦⟨Identifier⟩:⟨E @4⟩⟧
+    | ⟦⟨String⟩:⟨E @4⟩⟧
+    ;
+
+    sort NVPairSeq
+    | ⟦⟨NVPairSeq @2⟩,⟨NameValuePair⟩⟧ @2 | ⟦⟨NameValuePair⟩⟧ @3 | ⟦⟧ @1
+    ;
+
     sort T
-    | ⟦⟨BooleanType⟩⟧ | ⟦NumberType⟧ | ⟦StringType⟧ | ⟦⟨VoidType⟩⟧
+    | ⟦⟨BooleanType⟩⟧ | ⟦⟨NumberType⟩⟧ | ⟦⟨StringType⟩⟧ | ⟦⟨VoidType⟩⟧
     | ⟦⟨Identifier⟩⟧
     | ⟦(⟨TypeSeq⟩)=>⟨T⟩⟧
+    | ⟦{⟨NTPairSeq⟩}⟧
     ;
 
     sort TypeSeq
     | ⟦⟨TypeSeq @2⟩,⟨T⟩⟧ @2 | ⟦⟨T⟩⟧ @3 | ⟦⟧ @1
     ;
 
+    sort NameTypePair
+    | ⟦⟨Identifier⟩:⟨T⟩⟧
+    ;
+
+    sort NTPairSeq
+    | ⟦⟨NTPairSeq @2⟩,⟨NameTypePair⟩⟧ @2 | ⟦⟨NameTypePair⟩⟧ @3 | ⟦⟧ @1
+    ;
+
     sort Statement
+    | ⟦⟨E⟩⟨Separator⟩⟧
+    | ⟦⟨Separator⟩⟧
     | ⟦⟨IntDec⟩⟧ | ⟦⟨FuncDec⟩⟧
     | ⟦{⟨StatementSeq⟩}⟧
-    | ⟦⟨Var⟩⟨VarDecSeq⟩;⟧
-    | ⟦⟨E⟩;⟧
+    | ⟦⟨Var⟩⟨VarDecSeq⟩⟨Separator⟩⟧
+    | ⟦⟨If⟩(⟨E⟩)⟨Statement⟩⟨Else⟩⟨Statement⟩⟧
+    | ⟦⟨If⟩(⟨E⟩)⟨Statement⟩⟧
     | ⟦⟨While⟩(⟨E⟩)⟨Statement⟩⟧
-    | ⟦⟨Return⟩⟨E⟩;⟧
-    | ⟦⟨Return⟩;⟧
+    | ⟦⟨Return⟩⟨E⟩⟨Separator⟩⟧
+    | ⟦⟨Return⟩⟨Separator⟩⟧
     ;
 
     sort StatementSeq
@@ -87,8 +124,8 @@ module yuhan.project1.Pr1Yuhan
     ;
 
     sort Member
-    | ⟦⟨Identifier⟩:⟨T⟩;⟧
-    | ⟦⟨Identifier⟩⟨CallSignature⟩{⟨StatementSeq⟩};⟧
+    | ⟦⟨Identifier⟩:⟨T⟩⟨Separator⟩⟧
+    | ⟦⟨Identifier⟩⟨CallSignature⟩{⟨StatementSeq⟩}⟨Separator⟩⟧
     ;
 
     sort FuncDec
