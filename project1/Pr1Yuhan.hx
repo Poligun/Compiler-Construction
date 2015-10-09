@@ -7,8 +7,6 @@ module yuhan.project1.Pr1Yuhan
     token StringType  | string;
     token VoidType    | void;
 
-    token Separator | ";";
-
     token Var       | var;
     token If        | if;
     token Else      | else;
@@ -16,6 +14,8 @@ module yuhan.project1.Pr1Yuhan
     token Return    | return;
     token Interface | interface;
     token Function  | function;
+
+    token Separator  | ";";
 
     token Identifier | [a-zA-Z$_][a-zA-Z0-9$_]*;
     token Integer    | [0-9]+;
@@ -73,7 +73,7 @@ module yuhan.project1.Pr1Yuhan
     ;
 
     sort NVPairSeq
-    | ⟦⟨NVPairSeq @2⟩,⟨NameValuePair⟩⟧ @2 | ⟦⟨NameValuePair⟩⟧ @3 | ⟦⟧ @1
+    | ⟦⟨NameValuePair⟩,⟨NVPairSeq⟩⟧ | ⟦⟨NameValuePair⟩⟧ | ⟦⟧
     ;
 
     sort T
