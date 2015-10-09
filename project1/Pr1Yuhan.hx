@@ -20,14 +20,14 @@ module yuhan.project1.Pr1Yuhan
     token Identifier | [a-zA-Z$_][a-zA-Z0-9$_]*;
     token Integer    | [0-9]+;
 
-    token fragment StringEscape
-    | \\([\'\"\\nt]|(\r?\n)|(x[a-fA-F0-9][a-fA-F0-9])); 
-    
     token String
     | \"([^\\\"]|⟨StringEscape⟩)*\"
     | \'([^\\\']|⟨StringEscape⟩)*\'
     ;
-    
+
+    token fragment StringEscape
+    | \\([\'\"\\nt]|(\r?\n)|(x[a-fA-F0-9][a-fA-F0-9])); 
+
     sort Escaped
     | ⟦\\⟧
     ;
@@ -39,9 +39,9 @@ module yuhan.project1.Pr1Yuhan
     main sort Program
     | ⟦⟨StatementSeq⟩⟧
     ;
-    
+
     sort E
-    | ⟦⟨Identifier⟩⟧ @19 | ⟦⟨Integer⟩⟧ @19 | ⟦⟨String⟩⟧ @19 | ⟦⟨Object⟩⟧ @19  | ⟦(⟨E⟩)⟧ @19
+    | ⟦⟨Identifier⟩⟧ @19 | ⟦⟨Integer⟩⟧ @19 | ⟦⟨String⟩⟧ @19 | ⟦⟨Object⟩⟧ @19 | ⟦⟨AnonFunc⟩⟧ @19 | ⟦(⟨E⟩)⟧ @19
     | ⟦⟨E @18⟩(⟨ExpSeq⟩)⟧ @18 | ⟦⟨E @18⟩.⟨E @19⟩⟧ @18
     | ⟦!⟨E @15⟩⟧ @15 | ⟦~⟨E @15⟩⟧ @15 | ⟦-⟨E @15⟩⟧ @15 | ⟦+⟨E @15⟩⟧ @15
     | ⟦⟨E @14⟩*⟨E @15⟩⟧ @14 | ⟦⟨E @14⟩/⟨E @15⟩⟧ @14 | ⟦⟨E @14⟩%⟨E @15⟩⟧ @14
@@ -54,7 +54,8 @@ module yuhan.project1.Pr1Yuhan
     | ⟦⟨E @6⟩&&⟨E @7⟩⟧ @6
     | ⟦⟨E @5⟩||⟨E @6⟩⟧ @5
     | ⟦⟨E @5⟩?⟨E⟩:⟨E @4⟩⟧ @4 //Here ternary operator is right associative
-    | ⟦⟨E @4⟩=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩+=⟨E @3⟩⟧ @3
+    | ⟦⟨E @4⟩=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩+=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩-=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩*=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩/=⟨E @3⟩⟧ @3
+    | ⟦⟨E @4⟩&=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩^=⟨E @3⟩⟧ @3 | ⟦⟨E @4⟩|=⟨E @3⟩⟧ @3
     | ⟦⟨E @1⟩,⟨E @2⟩⟧ @1 //Comma Sequence has the lowest precedence
     ;
 
@@ -99,7 +100,7 @@ module yuhan.project1.Pr1Yuhan
     | ⟦⟨Separator⟩⟧
     | ⟦⟨IntDec⟩⟧ | ⟦⟨FuncDec⟩⟧
     | ⟦{⟨StatementSeq⟩}⟧
-    | ⟦⟨Var⟩⟨VarDecSeq⟩⟨Separator⟩⟧
+    | ⟦⟨VarDecStatement⟩⟧
     | ⟦⟨If⟩(⟨E⟩)⟨Statement⟩⟨Else⟩⟨Statement⟩⟧
     | ⟦⟨If⟩(⟨E⟩)⟨Statement⟩⟧
     | ⟦⟨While⟩(⟨E⟩)⟨Statement⟩⟧
@@ -109,6 +110,10 @@ module yuhan.project1.Pr1Yuhan
 
     sort StatementSeq
     | ⟦⟨StatementSeq @2⟩⟨Statement⟩⟧ @2 | ⟦⟨Statement⟩⟧ @3 | ⟦⟧ @1
+    ;
+
+    sort VarDecStatement
+    | ⟦⟨Var⟩⟨VarDecSeq⟩⟨Separator⟩⟧
     ;
 
     sort VarDecSeq //Variable Declaration Sequence
@@ -130,6 +135,10 @@ module yuhan.project1.Pr1Yuhan
 
     sort FuncDec
     | ⟦⟨Function⟩⟨Identifier⟩⟨CallSignature⟩{⟨StatementSeq⟩}⟧
+    ;
+
+    sort AnonFunc
+    | ⟦⟨Function⟩⟨CallSignature⟩{⟨StatementSeq⟩}⟧
     ;
 
     sort CallSignature
