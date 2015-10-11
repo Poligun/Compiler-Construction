@@ -1,7 +1,11 @@
+.DS_Store
 build
 *.env
 *.run
 \#.+\#
 *~
 *.swp
+*.aux
+*.log
+*.synctex.gz
 
