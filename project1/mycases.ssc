@@ -4,6 +4,24 @@ str1 = "This is a demonstraction of multiple line\n\
 string defintion. \xa4\xbb\n\
 .\\\t\n";
 
+/* Test of interface declaration */
+interface UserInfo
+{
+    name    : string;
+    gender  : string;
+    age     : number;
+    address : {
+        street: string,
+        apt   : string,
+        city  : string,
+        state : string,
+        zip   : string
+    };
+    toString(): string {
+        return '{}({}):{}'.format(this.name, this.age, addressToString(this.address));
+    };
+};
+
 /* Test of different types and object literal */
 function map(func: (number)=>number, lst: {first: number, second: list}): list
 {
