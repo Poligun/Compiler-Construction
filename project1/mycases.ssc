@@ -16,10 +16,10 @@ var x: number,
 /* Test of interface declaration */
 interface UserInfo
 {
-    name    : string;
-    gender  : string;
-    age     : number;
-    address : {
+    name    : string; // Name of the user
+    gender  : string; // Gender of the user: m -> male, f -> female
+    age     : number; // TO-DO: add verifier
+    address : {  /* This should be defined explicitly as an interface later. */
         street: string,
         apt   : string,
         city  : string,
