@@ -115,7 +115,9 @@ module yuhan.project1.Pr1Yuhan
     ;
 
     sort VarDecSeq //Variable Declaration Sequence
-    | ⟦⟨VarDecSeq @2⟩,⟨Identifier⟩:⟨T⟩⟧ @1 | ⟦⟨Identifier⟩:⟨T⟩⟧ @2
+    | ⟦⟨Identifier⟩:⟨T⟩⟧
+    | ⟦⟨Identifier⟩:⟨T⟩,⟨VarDecSeq⟩⟧
+    | ⟦⟧
     ;
 
     sort DecSeq

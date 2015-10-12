@@ -4,6 +4,15 @@ str1 = "This is a demonstraction of multiple line\n\
 string defintion. \xa4\xbb\n\
 .\\\t\n";
 
+/* Test of multiple variable definition */
+var x: number,
+    Y: string,
+    z: boolean,
+    w: {
+        foo: pair,
+        bar: ((number, number)=>number)=>string
+    };
+
 /* Test of interface declaration */
 interface UserInfo
 {
