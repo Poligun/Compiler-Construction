@@ -1,0 +1,26 @@
+/* Test of multiple line string */
+var str1: string;
+str1 = "This is a demonstraction of multiple line\n\
+string defintion. \xa4\xbb\n\
+.\\\t\n";
+
+/* Test of different types and object literal */
+function map(func: (number)=>number, lst: {first: number, second: list}): list
+{
+    return isNil(lst) ? lst : cons(func(lst.first), map(func, lst.second));
+}
+
+/* Test of right associativity of ternary operator */
+function filter(func: (number)=>boolean, lst: {first: number, second: list}): list
+{
+    return isNil(lst) ? lst : func(lst.first) ? cons(lst.first, filter(func, lst.second)) : filter(func, lst.second);
+}
+
+function square(v: number): number { return v * v; }
+
+map(square, cons(1, cons(2, cons(3, cons(4, getNil())))));
+
+interface list {
+    first: number;
+    second: list;
+};

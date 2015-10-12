@@ -1,0 +1,14 @@
+$.ajax({
+    url    : "https://www.google.com/api",
+    method : "POST",
+    data   : { 'foo': 16, 'bar': "whatever" } ,
+}).then(function(data: number): deferred {
+    var deferred: Deferred;
+    deferred = $.Deferred();
+    setTimeout(function(): void {
+        deferred.resolve(data * 4);
+    }, 3000);
+    return deferred;
+}).done(function(value: number): void {
+    console.log(value);
+});
