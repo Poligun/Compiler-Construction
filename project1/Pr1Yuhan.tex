@@ -1,73 +1,102 @@
+\def\CourseName{Compiler Construction}
+\def\AssignmentType{Project}
+\def\Number{1}
+\def\Due{Monday, October 12th}
+\def\Student{Yuhan Zhao}
+\def\NetID{yz2487}
+
 \documentclass[12pt]{article}
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{lastpage}
+
+\setlength{\oddsidemargin}{.0in}
+\setlength{\evensidemargin}{.0in}
+\setlength{\textwidth}{6.3in}
+\setlength{\topmargin}{-0.4in}
+
+\newcommand{\header}[1]
+{
+    \begin{center}
+    \framebox
+    {
+        \vbox
+        {
+            \hbox to 6in {{\bf \CourseName}  \hfill Page \thepage\ / \pageref{LastPage}}
+            \vspace{4mm}
+            \hbox to 6in {{\hfill \AssignmentType \Number \hfill}}
+            \vspace{4mm}
+            \hbox to 6in {{\Large \hfill {\bf #1} \hfill}}
+            \vspace{4mm}
+            \hbox to 6in {{\bf Name:} \Student \space {\bf No.} \NetID \hfill {\bf Due:} \Due}
+        }
+    }
+    \end{center}
+}
 
 \begin{document}
 
-\begin{center}
-  \Large{Compiler Construction}\\
-  \large{Project 1 Documentation}
-\end{center}
+\header{Documentation}
+\vspace{4mm}
+{\bf Expression.} When assigning operator precedence and associativity I take into
+account some modern browser implementations like that of Mozilla Firefox and Chrome, so
+my implementation will be slightly different (and they're all listed below):
 
-\begin{center}
 \begin{itemize}
-\item[{\bf Expression.}] When assigning operator precedence and associativity I take into
-  account some modern browser implementations like that of Mozilla Firefox and Chrome, so
-  my implementation will be slightly different (and they're all listed below):
+\item[1.] Ternary operator ``a ? b : c'' is implemented as right associative. This makes
+  more sense if we take a look at expressions of the form ``a ? b : c ? d : e'' which is
+  intuitively interpreted as ``If a holds then this expression evaluates to b, otherwise
+  if c holds then it evaluates to d, or e if c doesn't holds.'' Thus the expression should
+  be grouped as ``a ? b : (c ? d : e)'' which implies the right associativity of the
+  ternary operator.
+\item[2.] Member access operator ``:'' and function call operator ``()'' are assigned the
+  same precedence to allow two different types of expressions to be unambiguous without
+  parentheses.
   \begin{itemize}
-  \item[1.] Ternary operator ``a ? b : c'' is implemented as right associative. This makes
-    more sense if we take a look at expressions of the form ``a ? b : c ? d : e'' which is
-    intuitively interpreted as ``If a holds then this expression evaluates to b, otherwise
-    if c holds then it evaluates to d, or e if c doesn't holds.'' Thus the expression should
-    be grouped as ``a ? b : (c ? d : e)'' which implies the right associativity of the
-    ternary operator.
-  \item[2.] Member access operator ``:'' and function call operator ``()'' are assigned the
-    same precedence to allow two different types of expressions to be unambiguous without
-    parentheses.
-    \begin{itemize}
-    \item[]
-    \item[i.] ``foo().bar'', that is, foo is of type ``function'' that returns an object that
-      has a member ``bar''. This would've been invalid if we had assigned ``.'' operator higher
-      precedence. Same goes to line 7 of the given sample ``Fastfib.ssc''.
-    \item[ii.] ``bar.foo()'', that is, bar is an object that has a member ``foo'' which is
-      callable.
-    \end{itemize}
-  \item[3.] Three assignment operators are added: ``-='', ``*='' and ``/=''.
-  \item[4.] Comma operator is added to have the lowest precedence and is left associative.
-    It evaluates a sequence of expressions and returns the value of the last expression.
-  \item[5.] Interface variable initializer production ``$E \rightarrow$ \{(Id:E)*\}'' is
-    removed. To enable the same feature, ``Object Literal'' is introduced.
-  \item[6.] ``Object literal'' initializes an object and adds members to that object according
-    to all the name-value pairs defined in the curly brackets. For example, ``\{x : 4, y : 5,\}''
-    returns an object which has two members {\bf x} and {bf y} with values $4$ and $5$. Note that
-    an optional trailing comma is allowed by the grammar.\\
-    If we are to implement a strong typing language in the future, additional type checking can
-    be performed before assigning an object literal to an interface variable. The grammar also
-    allows nested object literal and passing an object literal to a function call, which saves
-    the programmer a lot of pain from defining temporary variables.
+  \item[i.] ``foo().bar'', that is, foo is of type ``function'' that returns an object that
+    has a member ``bar''. This would've been invalid if we had assigned ``.'' operator higher
+    precedence. Same goes to line 7 of the given sample ``Fastfib.ssc''.
+  \item[ii.] ``bar.foo()'', that is, bar is an object that has a member ``foo'' which is
+    callable.
   \end{itemize}
-\item[{\bf Declaration.}] Some extensions are made to create a more programmer-friendly language.
-  \begin{itemize}
-  \item[1.] Variable declaration statement is extended to allow defining multiple variables
-    within one statement (definitions separated by comma).
-  \item[2.] Anonymous function literal is introduced yet disabled (please refer to line 44 and sort
-    {\bf AnonFunc}). This introduction is just for fun since the real implementation depends on function
-    closure feature which requires the compiler to embed a runtime to handle dynamic memory allocation
-    and garbage collection. I'm not sure if the ARM32 machine code is sufficiant to support this feature
-    (and if I have time to implement that.)
-  \item[3.] Originally interface declaration and function declaration were both treated as statements.
-    This modification was to enable declarations within function body. If we were to implement this
-    modification, we would have to define the scoping of those nested declarations and to implement
-    a runtime which supports function closure. Attached file ``promise.ssc'' can be parsed by the
-    alternative parser compiled from ``Pr1Yuhan.hx.original''.
-  \end{itemize}
-\item[{\bf Program}] The original definition of the main sort $Program \rightarrow StatementSeq$
-  which is commented out, allows declarations and statements to be interweaved (It also accepts
-  empty input as of no declarations nor statements).\\
-  Current version ``Pr1Yuhan.hx'' does conform to the definition which requires at least one statement.
+\item[3.] Three assignment operators are added: ``-='', ``*='' and ``/=''.
+\item[4.] Comma operator is added to have the lowest precedence and is left associative.
+  It evaluates a sequence of expressions and returns the value of the last expression.
+\item[5.] Interface variable initializer production ``$E \rightarrow$ \{(Id:E)*\}'' is
+  removed. To enable the same feature, ``Object Literal'' is introduced.
+\item[6.] ``Object literal'' initializes an object and adds members to that object according
+  to all the name-value pairs defined in the curly brackets. For example, ``\{x : 4, y : 5,\}''
+  returns an object which has two members {\bf x} and {bf y} with values $4$ and $5$. Note that
+  an optional trailing comma is allowed by the grammar.\\
+  If we are to implement a strong typing language in the future, additional type checking can
+  be performed before assigning an object literal to an interface variable. The grammar also
+  allows nested object literal and passing an object literal to a function call, which saves
+  the programmer a lot of pain from defining temporary variables.
 \end{itemize}
-\end{center}
 
+\vspace{4mm}
+{\bf Declaration.} Some extensions are made to create a more programmer-friendly language.
+
+\begin{itemize}
+\item[1.] Variable declaration statement is extended to allow defining multiple variables
+  within one statement (definitions separated by comma).
+\item[2.] Anonymous function literal is introduced yet disabled (please refer to line 44 and sort
+  {\bf AnonFunc}). This introduction is just for fun since the real implementation depends on function
+  closure feature which requires the compiler to embed a runtime to handle dynamic memory allocation
+  and garbage collection. I'm not sure if the ARM32 machine code is sufficiant to support this feature
+  (and if I have time to implement that.)
+\item[3.] Originally interface declaration and function declaration were both treated as statements.
+  This modification was to enable declarations within function body. If we were to implement this
+  modification, we would have to define the scoping of those nested declarations and to implement
+  a runtime which supports function closure. Attached file ``promise.ssc'' can be parsed by uncommenting
+  all disabled sorts and productions.
+\end{itemize}
+
+\vspace{4mm}
+{\bf Program} The original definition of the main sort $Program \rightarrow StatementSeq$
+which is commented out, allows declarations and statements to be interweaved (It also accepts
+empty input as of no declarations nor statements).\\
+Current version ``Pr1Yuhan.hx'' does conform to the definition which requires at least one statement.
 
 \end{document}
 

@@ -34,8 +34,12 @@ module yuhan.project1.Pr1Yuhan
     ;
     */ //Currently disabled to comform to project 1 requirement.
 
-    sort ProgramPart
-    | ⟦⟨StatementSeq⟩⟧
+    main sort Program
+    | ⟦⟨DecSeq⟩⟨Statement⟩⟧ @2
+    | ⟦⟨Program @1⟩⟨Statement⟩⟧ @1
+    | ⟦⟨Program @1⟩⟨IntDec⟩⟧ @1
+    | ⟦⟨Program @1⟩⟨FuncDec⟩⟧ @1
+    ;
 
     sort E
     /* | ⟦⟨AnonFunc⟩⟧ @19 */ //Currently disabled to comform to project 1 requirement.
@@ -94,11 +98,11 @@ module yuhan.project1.Pr1Yuhan
     ;
 
     sort Statement
+    /* | ⟦⟨IntDec⟩⟧ | ⟦⟨FuncDec⟩⟧ */ //Currently disabled to comform to project 1 requirement.
     | ⟦⟨E⟩⟨Separator⟩⟧
     | ⟦⟨Separator⟩⟧
-    /* | ⟦⟨IntDec⟩⟧ | ⟦⟨FuncDec⟩⟧ */ //Currently disabled to comform to project 1 requirement.
     | ⟦{⟨StatementSeq⟩}⟧
-    | ⟦⟨VarDecStatement⟩⟧
+    | ⟦⟨Var⟩⟨VarDecSeq⟩⟨Separator⟩⟧
     | ⟦⟨If⟩(⟨E⟩)⟨Statement⟩⟨Else⟩⟨Statement⟩⟧
     | ⟦⟨If⟩(⟨E⟩)⟨Statement⟩⟧
     | ⟦⟨While⟩(⟨E⟩)⟨Statement⟩⟧
@@ -107,11 +111,7 @@ module yuhan.project1.Pr1Yuhan
     ;
 
     sort StatementSeq
-    | ⟦⟨StatementSeq⟩⟨Statement⟩⟧ | ⟦⟧
-    ;
-
-    sort VarDecStatement
-    | ⟦⟨Var⟩⟨VarDecSeq⟩⟨Separator⟩⟧
+    | ⟦⟨StatementSeq @1⟩⟨Statement⟩⟧ @1 | ⟦⟧ @2
     ;
 
     sort VarDecSeq //Variable Declaration Sequence
@@ -119,7 +119,9 @@ module yuhan.project1.Pr1Yuhan
     ;
 
     sort DecSeq
-    | ⟦⟨DecSeq⟩⟨IntDec⟩⟧ | ⟦⟨DecSeq⟩⟨FuncDec⟩⟧ | ⟦⟧
+    | ⟦⟧ @2
+    | ⟦⟨DecSeq @1⟩⟨IntDec⟩⟧ @1
+    | ⟦⟨DecSeq @1⟩⟨FuncDec⟩⟧ @1
     ;
 
     sort IntDec
@@ -127,7 +129,7 @@ module yuhan.project1.Pr1Yuhan
     ;
 
     sort MemberSeq
-    | ⟦⟨MemberSeq⟩⟨Member⟩⟧ | ⟦⟧
+    | ⟦⟨MemberSeq @1⟩⟨Member⟩⟧ @1 | ⟦⟧ @2
     ;
 
     sort Member
