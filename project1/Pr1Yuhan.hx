@@ -26,7 +26,7 @@ module yuhan.project1.Pr1Yuhan
     ;
 
     token fragment StringEscape
-    | \\([\'\"\\nt]|(\r?\n)|(x[a-fA-F0-9][a-fA-F0-9])); 
+    | \\([\'\"\\nt]|(\r?\n)|(x[a-fA-F0-9][a-fA-F0-9]));
 
     /*
     main sort Program

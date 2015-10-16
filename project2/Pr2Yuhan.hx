@@ -6,7 +6,14 @@ module yuhan.project2.Pr2Yuhan
     | "/*"([^*]|"*"[^/]|⟨NewLine⟩)*"*/"
     ;
 
-    token fragment NewLine | \n | \r\n;
+    token Identifier | [a-zA-Z$_][a-zA-Z0-9$_]*;
+    token Integer    | [0-9]+;
+
+    token String
+    | \"([^\\\"\r\n]|⟨Escape⟩)*\"
+    | \'([^\\\'\r\n]|⟨Escape⟩)*\'
+    ;
+
     token fragment HexDigit | [0-9a-fA-F];
     token fragment Escape | \\([\'\"\\nt]|(\r?\n)|(x[a-fA-F0-9][a-fA-F0-9]));
 
