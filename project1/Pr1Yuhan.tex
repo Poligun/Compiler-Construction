@@ -64,7 +64,7 @@ my implementation will be slightly different (and they're all listed below):
   It evaluates a sequence of expressions and returns the value of the last expression.
 \item[5.] Interface variable initializer production ``$E \rightarrow$ \{(Id:E)*\}'' is
   removed. To enable the same feature, ``Object Literal'' is introduced.
-\item[6.] ``Object literal'' initializes an object and adds members to that object according
+\item[6.] ``Object Literal'' initializes an object and adds members to that object according
   to all the name-value pairs defined in the curly brackets. For example, ``\{x : 4, y : 5,\}''
   returns an object which has two members {\bf x} and {bf y} with values $4$ and $5$. Note that
   an optional trailing comma is allowed by the grammar.\\
@@ -75,12 +75,22 @@ my implementation will be slightly different (and they're all listed below):
 \end{itemize}
 
 \vspace{4mm}
+{\bf Type.}
+\begin{itemize}
+\item[1.] For the last production of {\bf T}, optional trailing comma is not yet supported. I'm
+considering adding it.
+\item[2.] For the function type production $T \rightarrow (TypeSeq)=>T$, a lot of pain is saved
+by explicitly wrapping the input a pair of parentheses. We would've had to otherwise take special
+care of the associativity when it comes to nested function types and curry functions.
+\end{itemize}
+
+\vspace{4mm}
 {\bf Declaration.} Some extensions are made to create a more programmer-friendly language.
 
 \begin{itemize}
 \item[1.] Variable declaration statement is extended to allow defining multiple variables
   within one statement (definitions separated by comma).
-\item[2.] Anonymous function literal is introduced yet disabled (please refer to line 44 and sort
+\item[2.] Anonymous function literal is introduced yet disabled (please refer to the first production of {\bf E} and sort
   {\bf AnonFunc}). This introduction is just for fun since the real implementation depends on function
   closure feature which requires the compiler to embed a runtime to handle dynamic memory allocation
   and garbage collection. I'm not sure if the ARM32 machine code is sufficiant to support this feature
@@ -88,15 +98,21 @@ my implementation will be slightly different (and they're all listed below):
 \item[3.] Originally interface declaration and function declaration were both treated as statements.
   This modification was to enable declarations within function body. If we were to implement this
   modification, we would have to define the scoping of those nested declarations and to implement
-  a runtime which supports function closure. Attached file ``promise.ssc'' can be parsed by uncommenting
-  all disabled sorts and productions.
+  a runtime which supports function closure.\\
+  Attached file ``promise.ssc'' can be parsed by using the alternative definition of sort {\bf Program} and
+  uncommenting all disabled sorts and productions.
 \end{itemize}
 
 \vspace{4mm}
-{\bf Program} The original definition of the main sort $Program \rightarrow StatementSeq$
+{\bf Program.} The original definition of the main sort $Program \rightarrow StatementSeq$
 which is commented out, allows declarations and statements to be interweaved (It also accepts
-empty input as of no declarations nor statements).\\
-Current version ``Pr1Yuhan.hx'' does conform to the definition which requires at least one statement.
+empty input as of no declarations nor statements). I think this definition makes more sense
+and am considering adopting it. Current version of ``Pr1Yuhan.hx'' does conform to the definition
+which requires at least one statement.
+
+\vspace{4mm}
+{\bf Test Cases.} My own test cases are in ``mycases.ssc'' which should be successfully parsed by the parser.
+``promise.ssc'' demonstrates the full strength of the grammar when all productions are enabled. Some inconsistency
+of the samples are already discussed when explaining my choices and modifications during writing the grammar.
 
 \end{document}
-

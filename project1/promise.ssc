@@ -1,8 +1,8 @@
 $.ajax({
     url    : "https://www.google.com/api",
     method : "POST",
-    data   : { 'foo': 16, 'bar': "whatever" } ,
-}).then(function(data: number): deferred {
+    data   : { 'foo': 16, 'bar': "whatever" },
+}).then(function(data: number): Deferred {
     var deferred: Deferred;
     deferred = $.Deferred();
     setTimeout(function(): void {
