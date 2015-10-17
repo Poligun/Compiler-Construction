@@ -1,0 +1,4 @@
+// Usual end-of-line comment.
+/* This is sneaky
+// but really not */
+document.body.innerHTML = "/* Not a comment! */"; // a final comment
