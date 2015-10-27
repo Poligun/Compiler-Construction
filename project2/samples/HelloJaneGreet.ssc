@@ -1,0 +1,14 @@
+interface Person {
+    firstname: string;
+    lastname: string;
+    greet: (Person) => String;
+}
+
+function hello(person : Person): string {
+    return "Hello, " + person.firstname + " " + person.lastname;
+}
+
+var jane : Person;
+jane = {firstname: "Jane", lastname: "Coder", greet: hello};
+
+document.body.innerHTML = jane.greet(jane);

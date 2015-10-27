@@ -1,4 +1,0 @@
-// This is a comment /*
-which is opened incorrectly
-*/
-document.body.innerHTML = "Hello, World!";

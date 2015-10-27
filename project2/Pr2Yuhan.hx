@@ -3,7 +3,7 @@ module yuhan.project2.Pr2Yuhan
     /* Whitespace & comment that are ignored */
     space [ \t\r\n]
     | "//".*
-    | "/*"([^*]|"*"[^/]|\r?\n)*"*/"
+y    | "/*"([^*]|"*"[^/]|\r?\n)*"*/"
     ;
 
     token Identifier | [a-zA-Z$_][a-zA-Z0-9$_]*;
@@ -18,7 +18,95 @@ module yuhan.project2.Pr2Yuhan
     token fragment Escape | \\([\'\"\\nt]|(\r?\n)|(x⟨HexDigit⟩⟨HexDigit⟩));
     
     main sort Program
-    | ⟦ ⟨StatementSequence⟩ ⟧
+    | ⟦ ⟨StatementList⟩ ⟧
+    ;
+
+    sort StatementList
+    | ⟦⟧
+    | ⟦ ⟨Statement⟩ ⟨StatementList⟩ ⟧
+    ;
+
+    sort Statement
+    | ⟦ var ⟨NameTypePairList⟩ ; ⟧
+    | ⟦ function ⟨Identifier⟩ ⟨FunctionBody⟩ ⟧
+    | ⟦ interface ⟨Identifier⟩ { ⟨InterfaceMemberList⟩ } ⟧
+    | ⟦ ⟨Expression⟩ ; ⟧
+    | ⟦ ; ⟧
+    | ⟦ { ⟨StatementList⟩ } ⟧
+    | ⟦ if ( ⟨Expression⟩ ) ⟨Statement⟩ else ⟨Statement⟩ ⟧
+    | ⟦ if ( ⟨Expression⟩ ) ⟨Statement⟩ ⟧
+    | ⟦ while ( ⟨Expression⟩ ) ⟨Statement⟩ ⟧
+    | ⟦ return ⟨Expression⟩ ; ⟧
+    | ⟦ return ; ⟧
+    ;
+
+    sort NameTypePair
+    | ⟦ ⟨Identifier⟩ : ⟨Type⟩ ⟧
+    ;
+
+    sort NameTypePairList
+    | ⟦⟧ @1
+    | ⟦ ⟨NameTypePair⟩ ⟧ @2
+    | ⟦ ⟨NameTypePair⟩ , ⟨NameTypePairList⟩ ⟧ @2
+    ;
+    
+    sort Type
+    | ⟦ boolean ⟧
+    | ⟦ number ⟧
+    | ⟦ string ⟧
+    | ⟦ void ⟧
+    | ⟦ ⟨Identifier⟩ ⟧
+    | ⟦ ( ⟨TypeList⟩ ) => ⟨Type⟩ ⟧
+    | ⟦ { ⟨NameTypePairList⟩ } ⟧
+    ;
+
+    sort TypeList
+    | ⟦⟧ @1
+    | ⟦ ⟨Type⟩ ⟧ @2
+    | ⟦ ⟨Type⟩ , ⟨TypeList @2⟩ ⟧ @2
+    ;
+
+    sort InterfaceMember
+    | ⟦ ⟨NameTypePair⟩ ; ⟧
+    | ⟦ ⟨Identifier⟩ ⟨FunctionBody⟩ ; ⟧
+    ;
+
+    sort InterfaceMemberList
+    | ⟦⟧
+    | ⟦ ⟨InterfaceMember⟩ ⟨InterfaceMemberList⟩ ⟧
+    ;
+
+    sort FunctionBody
+    | ⟦ ⟨CallSignature⟩ { ⟨StatementList⟩ } ⟧
+    ;
+
+    sort CallSignature
+    | ⟦ ( ⟨NameTypePairList⟩ ) : ⟨Type⟩ ⟧
+    ;
+
+    sort AnonymousFunction
+    | ⟦ function ⟨FunctionBody⟩ ⟧
+    ;
+
+    sort Object
+    | ⟦ { ⟨NameValuePairList⟩ } ⟧
+    ;
+
+    sort NameValuePair
+    | ⟦ ⟨Identifier⟩ : ⟨Expression @2⟩ ⟧
+    | ⟦ ⟨String⟩ : ⟨Expression @2⟩ ⟧
+    ;
+
+    sort NameValuePairList
+    | ⟦⟧
+    | ⟦ ⟨NameValuePair⟩ ⟧
+    | ⟦ ⟨NameValuePair⟩ , ⟨NameValuePairList⟩ ⟧
+    ;
+    
+    sort ExpressionList
+    | ⟦⟧ @1
+    | ⟦ ⟨Expression @2⟩ ⟧ @2
+    | ⟦ ⟨Expression @2⟩ , ⟨ExpressionList @2⟩ ⟧ @2
     ;
 
     sort Expression
@@ -28,11 +116,10 @@ module yuhan.project2.Pr2Yuhan
     | ⟦ ⟨Integer⟩ ⟧ @19
     | ⟦ ⟨String⟩ ⟧ @19
     | ⟦ ⟨Object⟩ ⟧ @19
-    | ⟦ undefined ⟧ @19
     | sugar ⟦ ( ⟨Expression #⟩ ) ⟧ @19 → #
     // Function call and Member access
-    | ⟦ ⟨Expression @18⟩ ( ⟨ExpressionSequence⟩ ) ⟧ @18
-    | ⟦ ⟨Expression @18⟩ . ⟨Expression @19⟩ ⟧ @18
+    | ⟦ ⟨Expression @18⟩ ( ⟨ExpressionList⟩ ) ⟧ @18
+    | ⟦ ⟨Expression @18⟩ . ⟨Identifier⟩ ⟧ @18
     // Unary Operators
     | ⟦ ! ⟨Expression @15⟩ ⟧ @15
     | ⟦ ~ ⟨Expression @15⟩ ⟧ @15
@@ -73,89 +160,26 @@ module yuhan.project2.Pr2Yuhan
     // Comma Operator
     | ⟦ ⟨Expression @1⟩ , ⟨Expression @2⟩ ⟧ @1
     ;
-    
-    sort ExpressionSequence
-    | ⟦⟧ @1
-    | ⟦ ⟨Expression @2⟩ ⟧ @2
-    | ⟦ ⟨Expression @2⟩ , ⟨ExpressionSequence @2⟩ ⟧ @2
+
+    // Function declarations are treated as variable declarations
+    sort DecType
+    | ⟦Variable⟧
+    | ⟦Interface⟧
     ;
 
-    sort Object
-    | ⟦ null ⟧
-    | ⟦ { ⟨NameValuePairSequence⟩ } ⟧
+    sort Declaration
+    | ⟦ ⟨Identifier⟩ ⟨DecType⟩ ⟧
     ;
 
-    sort NameValuePair
-    | ⟦ ⟨Identifier⟩ : ⟨Expression @2⟩ ⟧
-    | ⟦ ⟨String⟩ : ⟨Expression @2⟩ ⟧
-    ;
-
-    sort NameValuePairSequence
+    sort DeclarationList
     | ⟦⟧
-    | ⟦ ⟨NameValuePair⟩ ⟧
-    | ⟦ ⟨NameValuePair⟩ , ⟨NameValuePairSequence⟩ ⟧
-    ;
-    
-    sort Type
-    | ⟦ boolean ⟧
-    | ⟦ number ⟧
-    | ⟦ string ⟧
-    | ⟦ void ⟧
-    | ⟦ ⟨Identifier⟩ ⟧
-    | ⟦ ( ⟨TypeSequence⟩ ) => ⟨Type⟩ ⟧
-    | ⟦ { ⟨NameTypePairSequence⟩ } ⟧
+    | ⟦ ⟨Declaration⟩ ⟨DeclarationList⟩ ⟧
     ;
 
-    sort TypeSequence
-    | ⟦⟧ @1
-    | ⟦ ⟨Type⟩ ⟧ @2
-    | ⟦ ⟨Type⟩ , ⟨TypeSequence @2⟩ ⟧ @2
-    ;
+    attribute ↑decs(DeclarationList);
 
-    sort NameTypePair
-    | ⟦ ⟨Identifier⟩ : ⟨Type⟩ ⟧
-    ;
-
-    sort NameTypePairSequence
-    | ⟦⟧ @1
-    | ⟦ ⟨NameTypePair⟩ ⟧ @2
-    | ⟦ ⟨NameTypePair⟩ , ⟨NameTypePairSequence⟩ ⟧ @2
-    ;
-
-    sort InterfaceMember
-    | ⟦ ⟨Identifier⟩ : ⟨Type⟩ ; ⟧
-    | ⟦ ⟨Identifier⟩ ⟨CallSignature⟩ { ⟨StatementSequence⟩ } ; ⟧
-    ;
-
-    sort InterfaceMemberSequence
-    | ⟦⟧
-    | ⟦ ⟨InterfaceMember⟩ ⟨InterfaceMemberSequence⟩ ⟧
-    ;
-
-    sort AnonymousFunction
-    | ⟦ function ⟨CallSignature⟩ { ⟨StatementSequence⟩ } ⟧
-    ;
-
-    sort CallSignature
-    | ⟦ ( ⟨NameTypePairSequence⟩ ) : ⟨Type⟩ ⟧
-    ;
-
-    sort Statement
-    | ⟦ var ⟨NameTypePairSequence⟩ ; ⟧
-    | ⟦ function ⟨Identifier⟩ ⟨CallSignature⟩ { ⟨StatementSequence⟩ } ⟧
-    | ⟦ interface ⟨Identifier⟩ { ⟨InterfaceMemberSequence⟩ } ⟧
-    | ⟦ ⟨Expression⟩ ; ⟧
-    | ⟦ ; ⟧
-    | ⟦ { ⟨StatementSequence⟩ } ⟧
-    | ⟦ if ( ⟨Expression⟩ ) ⟨Statement⟩ else ⟨Statement⟩ ⟧
-    | ⟦ if ( ⟨Expression⟩ ) ⟨Statement⟩ ⟧
-    | ⟦ while ( ⟨Expression⟩ ) ⟨Statement⟩ ⟧
-    | ⟦ return ⟨Expression⟩ ; ⟧
-    | ⟦ return ; ⟧
-    ;
-
-    sort StatementSequence
-    | ⟦⟧
-    | ⟦ ⟨Statement⟩ ⟨StatementSequence⟩ ⟧
-    ;
+    sort Statement | ↑decs;
+    ⟦ var ⟨NameTypePairList ↑decs(#decs1)⟩ ; ⟧ ↑decs(#decs1);
+    ⟦ function ⟨Identifier #1⟩ ⟨FunctionBody⟩ ⟧
+      ↑decs(⟦ ⟨Declaration ⟦ #1 ⟨DecType ⟦Variable⟧⟩ ⟧⟩ ⟨DeclarationList ⟦⟧⟩ ⟧);
 }
